@@ -5,9 +5,7 @@
 #include "ArrayView.h"
 
 #include <cassert>
-#include <cmath>
 #include <list>
-#include <vector>
 #include <algorithm>
 #include <functional>
 #include <limits.h> // INT_MIN
