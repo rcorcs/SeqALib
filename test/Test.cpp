@@ -47,6 +47,10 @@ int main(int argc, char** argv) {
 
   NeedlemanWunschSA<std::string,char,'-'> SA(ScoringSystem(-1,2),equal<char>); //could also use `nullptr` instead of `equal<char>`
   AlignedSequence<char,'-'> Alignment = SA.getAlignment(seq1,seq2);
+
+  ////Another even simpler way of using it
+  //AlignedSequence<char,'-'> Alignment = NeedlemanWunschSA<std::string,char,'-'>().getAlignment(seq1,seq2);
+
   printAlignment(Alignment);
 
   return 0;

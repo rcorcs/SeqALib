@@ -202,8 +202,11 @@ public:
     return ScoringSystem(-1,2,-1);
   }
 
+  NeedlemanWunschSA() : BaseType(getDefaultScoring(),nullptr),
+                        Matrix(nullptr), Matches(nullptr) {}
+
   NeedlemanWunschSA(ScoringSystem Scoring, MatchFnTy Match = nullptr)
-   : SequenceAligner<ContainerType,Ty,Blank,MatchFnTy>(Scoring, Match),
+   : BaseType(Scoring, Match),
      Matrix(nullptr), Matches(nullptr) {}
 
   virtual AlignedSequence<Ty,Blank> getAlignment(ContainerType &Seq1, ContainerType &Seq2) {

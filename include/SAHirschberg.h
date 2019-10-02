@@ -132,8 +132,12 @@ private:
 
 public:
 
+
+  HirschbergSA()
+   : BaseType(NeedlemanWunschSA<ArrayView<ContainerType>, Ty, Blank, MatchFnTy>::getDefaultScoring(), nullptr) {}
+
   HirschbergSA(ScoringSystem Scoring, MatchFnTy Match = nullptr)
-   : SequenceAligner<ContainerType,Ty,Blank,MatchFnTy>(Scoring, Match) {}
+   : BaseType(Scoring, Match) {}
 
   virtual AlignedSequence<Ty,Blank> getAlignment(ContainerType &Seq1, ContainerType &Seq2) {
     AlignedSequence<Ty,Blank> Result;
