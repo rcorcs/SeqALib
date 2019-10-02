@@ -11,7 +11,7 @@ The algorithms currently provided by SeqALib are:
 
 AUTHOR: Rodrigo Rocha
 
-## Simple API: Example
+## Easy to use
 
 See full example in the file: `test/Test.cpp`
 
