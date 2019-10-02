@@ -1,4 +1,4 @@
-template<typename ContainerType, typename Ty=typename ContainerType::value_type, Ty Blank=Ty(0), typename MatchFnTy=std::function<bool(typename ContainerType::value_type,typename ContainerType::value_type)>>
+template<typename ContainerType, typename Ty=typename ContainerType::value_type, Ty Blank=Ty(0), typename MatchFnTy=std::function<bool(Ty,Ty)>>
 class NeedlemanWunschSA : public SequenceAligner<ContainerType,Ty,Blank,MatchFnTy> {
 private:
   ScoreSystemType *Matrix;
