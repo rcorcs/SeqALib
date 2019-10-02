@@ -3,7 +3,7 @@ class HirschbergSA : public SequenceAligner<ContainerType,Ty,Blank,MatchFnTy> {
 private:
   ScoreSystemType *FinalScore;
   ScoreSystemType *ScoreAux;
-  ScoreSystemType *ScoreCache;  
+  ScoreSystemType *ScoreCache;
 
   using BaseType = SequenceAligner<ContainerType,Ty,Blank,MatchFnTy>;
 
@@ -80,10 +80,7 @@ private:
   }
 
   template<typename ArrayType>
-  void HirschbergRec(ArrayType &Seq1, ArrayType &Seq2, AlignedSequence<Ty> &Res) {
-//  AlignedSequence<Ty> HirschbergRec(ArrayType &Seq1, ArrayType &Seq2, AlignedSequence<Ty> &Res) {
-    //Ty Blank = BaseType::getBlank();
-    //AlignedSequence<Ty> Res;
+  void HirschbergRec(ArrayType &Seq1, ArrayType &Seq2, AlignedSequence<Ty,Blank> &Res) {
     if (Seq1.size()==0) {
       for (auto Char : Seq2) {
         Res.Data.push_back(typename BaseType::EntryType(Blank,Char,false));
@@ -93,12 +90,11 @@ private:
         Res.Data.push_back(typename BaseType::EntryType(Char,Blank,false));
       }
     } else if (Seq1.size()==1 || Seq2.size()==1) {
-      NeedlemanWunschSA<ArrayView<ContainerType>, Ty, Blank, MatchFnTy> SA(BaseType::getScoring(),
-                               BaseType::getMatchOperation(),
-                               Seq1, Seq2);
-      //Res.Data = std::move(SA.getResult().Data);
-      Res.splice(SA.getResult());
-
+      NeedlemanWunschSA<ArrayView<ContainerType>, Ty, Blank, MatchFnTy> SA(
+                               BaseType::getScoring(),
+                               BaseType::getMatchOperation());
+      AlignedSequence<Ty,Blank> NWResult = SA.getAlignment(Seq1, Seq2);
+      Res.splice(NWResult);
     } else {
       int Seq1Mid = Seq1.size()/2;
    
@@ -124,39 +120,32 @@ private:
       NewSeq1L.sliceWindow(0,Seq1Mid);
       ArrayType NewSeq2L(Seq2);
       NewSeq2L.sliceWindow(0,Seq2Mid);
-      //AlignedSequence<Ty> ResL = HirschbergRec(NewSeq1L, NewSeq2L, Res);
       HirschbergRec(NewSeq1L, NewSeq2L, Res); 
 
       ArrayType NewSeq1R(Seq1);
       NewSeq1R.sliceWindow(Seq1Mid,Seq1.size());
       ArrayType NewSeq2R(Seq2);
       NewSeq2R.sliceWindow(Seq2Mid,Seq2.size());
-      //AlignedSequence<Ty> ResR = HirschbergRec(NewSeq1R, NewSeq2R, Res);
       HirschbergRec(NewSeq1R, NewSeq2R, Res);
-
-
-      //Res.splice(ResL);
-      //Res.splice(ResR);
     }
-
-    //return std::move(Res);
   }
 
 public:
-  HirschbergSA(
-    ScoringSystem Scoring,
-    MatchFnTy Match,
-    ContainerType &Seq1,
-    ContainerType &Seq2) : SequenceAligner<ContainerType,Ty,Blank,MatchFnTy>(Scoring, Match, Seq1, Seq2) {
+
+  HirschbergSA(ScoringSystem Scoring, MatchFnTy Match = nullptr)
+   : SequenceAligner<ContainerType,Ty,Blank,MatchFnTy>(Scoring, Match) {}
+
+  virtual AlignedSequence<Ty,Blank> getAlignment(ContainerType &Seq1, ContainerType &Seq2) {
+    AlignedSequence<Ty,Blank> Result;
     ScoreSystemType *ScoreContainer = new ScoreSystemType[3*(Seq2.size()+1)];
     FinalScore = &ScoreContainer[0];
     ScoreAux = &ScoreContainer[Seq2.size()+1];
     ScoreCache = &ScoreContainer[2*(Seq2.size()+1)];
     ArrayView< ContainerType > View1(Seq1);
     ArrayView< ContainerType > View2(Seq2);
-    HirschbergRec(View1,View2,BaseType::getResult());
-    //BaseType::getResult().Data = std::move(HirschbergRec(View1,View2).Data);
+    HirschbergRec(View1,View2,Result);
     delete []ScoreContainer;
+    return Result;
   }
 
 };

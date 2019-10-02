@@ -56,19 +56,19 @@ public:
 
   AlignedSequence() {}
 
-  AlignedSequence(const AlignedSequence<Ty> &Other) : Data(Other.Data) {}
-  AlignedSequence(AlignedSequence<Ty> &&Other) : Data(std::move(Other.Data)) {}
+  AlignedSequence(const AlignedSequence<Ty, Blank> &Other) : Data(Other.Data) {}
+  AlignedSequence(AlignedSequence<Ty, Blank> &&Other) : Data(std::move(Other.Data)) {}
 
-  AlignedSequence<Ty> &operator=(const AlignedSequence<Ty> &Other) {
+  AlignedSequence<Ty> &operator=(const AlignedSequence<Ty, Blank> &Other) {
     Data = Other.Data;
     return (*this);
   }
 
-  void append(const AlignedSequence<Ty> &Other) {
+  void append(const AlignedSequence<Ty, Blank> &Other) {
     Data.insert(Data.end(), Other.Data.begin(), Other.Data.end());
   }
 
-  void splice(AlignedSequence<Ty> &Other) {
+  void splice(AlignedSequence<Ty, Blank> &Other) {
     Data.splice(Data.end(), Other.Data);
   }
 
@@ -120,21 +120,13 @@ class SequenceAligner {
 private:
   ScoringSystem Scoring;
   MatchFnTy Match;
-  //Ty Blank;
 
-  ArrayView<ContainerType> Seq0;
-  ArrayView<ContainerType> Seq1;
-
-  AlignedSequence<Ty,Blank> Result;
 public:
 
   using EntryType = typename AlignedSequence<Ty,Blank>::Entry;
 
-  SequenceAligner(
-    ScoringSystem Scoring,
-    MatchFnTy Match,
-    ContainerType &Seq0,
-    ContainerType &Seq1) : Scoring(Scoring), Match(Match), Seq0(Seq0), Seq1(Seq1) {}  
+  SequenceAligner(ScoringSystem Scoring, MatchFnTy Match = nullptr)
+    : Scoring(Scoring), Match(Match) {}  
 
   ScoringSystem &getScoring() { return Scoring; }
 
@@ -146,14 +138,8 @@ public:
 
   Ty getBlank() { return Blank; }
 
-  AlignedSequence<Ty,Blank> &getResult() { return Result; }
+  virtual AlignedSequence<Ty,Blank> getAlignment(ContainerType &Seq0, ContainerType &Seq1) = 0;
 
-  size_t getNumSequences() { return 2; }
-
-  ArrayView<ContainerType> &getSequence(int idx) {
-    assert((idx==0 || idx==1));
-    return (idx==0)?Seq0:Seq1;
-  }
 };
 
 #include "SANeedlemanWunsch.h"

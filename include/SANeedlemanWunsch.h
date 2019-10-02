@@ -19,17 +19,13 @@ private:
 
   using BaseType = SequenceAligner<ContainerType,Ty,Blank,MatchFnTy>;
 
-  void cacheAllMatches() {
+  void cacheAllMatches(ContainerType &Seq1, ContainerType &Seq2) {
     if (BaseType::getMatchOperation()==nullptr) {
       Matches = nullptr;
       return;
     }
-    auto &Seq1Ref = BaseType::getSequence(0);
-    auto &Seq2Ref = BaseType::getSequence(1);
-    Ty *Seq1 = &(Seq1Ref[0]);
-    Ty *Seq2 = &(Seq2Ref[0]);
-    const size_t SizeSeq1 = Seq1Ref.size();
-    const size_t SizeSeq2 = Seq2Ref.size();
+    const size_t SizeSeq1 = Seq1.size();
+    const size_t SizeSeq2 = Seq2.size();
 
     MatchesRows = SizeSeq1;
     MatchesCols = SizeSeq2;
@@ -39,9 +35,9 @@ private:
         Matches[i*SizeSeq2 + j] = BaseType::match(Seq1[i],Seq2[j]);
   }
 
-  void computeScoreMatrix() {
-    const size_t SizeSeq1 = BaseType::getSequence(0).size();
-    const size_t SizeSeq2 = BaseType::getSequence(1).size();
+  void computeScoreMatrix(ContainerType &Seq1, ContainerType &Seq2) {
+    const size_t SizeSeq1 = Seq1.size();
+    const size_t SizeSeq2 = Seq2.size();
 
     const size_t NumRows = SizeSeq1 + 1;
     const size_t NumCols = SizeSeq2 + 1;
@@ -97,12 +93,6 @@ private:
         }
       }
     } else {
-      auto &Seq1Ref = BaseType::getSequence(0);
-      auto &Seq2Ref = BaseType::getSequence(1);
-      Ty *Seq1 = &(Seq1Ref[0]);
-      Ty *Seq2 = &(Seq2Ref[0]);
-
-
       if (AllowMismatch) {
         for (unsigned i = 1; i < NumRows; i++) {
           for (unsigned j = 1; j < NumCols; j++) {
@@ -138,14 +128,8 @@ private:
     }
   }
 
-  void buildResult() {
-
-    auto &Seq1Ref = BaseType::getSequence(0);
-    auto &Seq2Ref = BaseType::getSequence(1);
-    Ty *Seq1 = &(Seq1Ref[0]);
-    Ty *Seq2 = &(Seq2Ref[0]);
-
-    auto &Data = BaseType::getResult().Data;
+  void buildResult(ContainerType &Seq1, ContainerType &Seq2, AlignedSequence<Ty,Blank> &Result) {
+    auto &Data = Result.Data;
 
     ScoringSystem &Scoring = BaseType::getScoring();
     const ScoreSystemType Gap = Scoring.getGapPenalty();
@@ -218,19 +202,17 @@ public:
     return ScoringSystem(-1,2,-1);
   }
 
-  NeedlemanWunschSA(
-    ScoringSystem Scoring,
-    MatchFnTy Match,
-    ContainerType &Seq1,
-    ContainerType &Seq2) : SequenceAligner<ContainerType,Ty,Blank,MatchFnTy>(Scoring, Match, Seq1, Seq2),
-    Matrix(nullptr), Matches(nullptr) {
+  NeedlemanWunschSA(ScoringSystem Scoring, MatchFnTy Match = nullptr)
+   : SequenceAligner<ContainerType,Ty,Blank,MatchFnTy>(Scoring, Match),
+     Matrix(nullptr), Matches(nullptr) {}
 
-    cacheAllMatches();
-    //printMatches();
-    computeScoreMatrix();
-    //printMatrix();
-    buildResult();
-    clearAll();        
+  virtual AlignedSequence<Ty,Blank> getAlignment(ContainerType &Seq1, ContainerType &Seq2) {
+    AlignedSequence<Ty,Blank> Result;
+    cacheAllMatches(Seq1,Seq2);
+    computeScoreMatrix(Seq1,Seq2);
+    buildResult(Seq1,Seq2,Result);
+    clearAll();
+    return Result;
   }
 
 };

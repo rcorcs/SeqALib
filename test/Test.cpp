@@ -45,8 +45,8 @@ int main(int argc, char** argv) {
     seq2 = std::string(argv[2]);
   }
 
-  NeedlemanWunschSA<std::string,char,'-'> SA(ScoringSystem(-1,2),equal<char>,seq1,seq2); //could also use `nullptr` instead of `equal<char>`
-  AlignedSequence<char,'-'> &Alignment = SA.getResult();
+  NeedlemanWunschSA<std::string,char,'-'> SA(ScoringSystem(-1,2),equal<char>); //could also use `nullptr` instead of `equal<char>`
+  AlignedSequence<char,'-'> Alignment = SA.getAlignment(seq1,seq2);
   printAlignment(Alignment);
 
   return 0;
