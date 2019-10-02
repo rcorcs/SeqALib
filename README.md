@@ -13,13 +13,14 @@ AUTHOR: Rodrigo Rocha
 
 See full example in the file: `test/Test.cpp`
 
-```
+```cpp
   std::string seq1 = "AAAGAATGCAT";
   std::string seq2 = "AAACTCAT";
 
   NeedlemanWunschSA<std::string,char,'-'> SA(ScoringSystem(-1,2));
   AlignedSequence<char,'-'> Alignment = SA.getAlignment(seq1,seq2);
 
+  // The resultng Alignment contains:
   // AAA GAATGCAT
   // |||    | |||
   // AAAC   T CAT
