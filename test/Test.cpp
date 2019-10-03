@@ -42,12 +42,18 @@ int main(int argc, char** argv) {
   }
 
   NeedlemanWunschSA<std::string,char,'-'> SA(ScoringSystem(-1,2),equal<char>); //could also use `nullptr` instead of `equal<char>`
-  AlignedSequence<char,'-'> Alignment = SA.getAlignment(seq1,seq2);
+  AlignedSequence<char,'-'> NWAlignment = SA.getAlignment(seq1,seq2);
 
-  ////Another even simpler way of using it
-  //AlignedSequence<char,'-'> Alignment = NeedlemanWunschSA<std::string,char,'-'>().getAlignment(seq1,seq2);
+  ////An even simpler way of using it with the default settings
+  //AlignedSequence<char,'-'> NWAlignment = NeedlemanWunschSA<std::string,char,'-'>().getAlignment(seq1,seq2);
 
-  printAlignment(Alignment);
+  std::cout << "# Needleman-Wunsch:" << std::endl;
+  printAlignment(NWAlignment);
+  
+  AlignedSequence<char,'-'> HAlignment = HirschbergSA<std::string,char,'-'>(ScoringSystem(-1,2),equal<char>).getAlignment(seq1,seq2);
+
+  std::cout << "# Hirschberg:" << std::endl;
+  printAlignment(HAlignment);
 
   return 0;
 }
