@@ -1,4 +1,4 @@
-# SeqALib: A Sequence Alignment Library
+# SeqALib: A Library for Sequence Alignment
 
 SeqALib contains efficient implementation of sequence alignment algorithms from
 Bioinformatics.
