@@ -8,8 +8,10 @@ Bioinformatics.
 The algorithms currently provided by SeqALib are:
 * [Needleman-Wunsch](https://en.wikipedia.org/wiki/Needleman%E2%80%93Wunsch_algorithm)
 * [Hirschberg](https://en.wikipedia.org/wiki/Hirschberg%27s_algorithm)
+* [Smith-Waterman](https://en.wikipedia.org/wiki/Smith%E2%80%93Waterman_algorithm)
+* [Gotoh Local and Global](http://helios.mi.parisdescartes.fr/~lomn/Cours/BI/Material2019/gap-penalty-gotoh.pdf)
 
-AUTHOR: Rodrigo Rocha
+AUTHOR: Rodrigo Rocha and Sean Stirling
 
 ## Easy to use
 
