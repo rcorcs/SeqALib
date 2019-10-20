@@ -142,5 +142,8 @@ public:
 
 #include "SANeedlemanWunsch.h"
 #include "SAHirschberg.h"
+#include "SASmithWaterman.h"
+#include "SALocalGotoh.h"
+#include "SAGlobalGotoh.h"
 
 #endif
