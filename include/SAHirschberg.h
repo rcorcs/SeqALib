@@ -134,7 +134,7 @@ public:
 
 
   HirschbergSA()
-   : BaseType(NeedlemanWunschSA<ArrayView<ContainerType>, Ty, Blank, MatchFnTy>::getDefaultScoring(), nullptr) {}
+   : BaseType(NeedlemanWunschSA<ContainerType, Ty, Blank, MatchFnTy>::getDefaultScoring(), nullptr) {}
 
   HirschbergSA(ScoringSystem Scoring, MatchFnTy Match = nullptr)
    : BaseType(Scoring, Match) {}

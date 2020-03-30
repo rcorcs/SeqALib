@@ -57,7 +57,7 @@ public:
   AlignedSequence(const AlignedSequence<Ty, Blank> &Other) : Data(Other.Data) {}
   AlignedSequence(AlignedSequence<Ty, Blank> &&Other) : Data(std::move(Other.Data)) {}
 
-  AlignedSequence<Ty> &operator=(const AlignedSequence<Ty, Blank> &Other) {
+  AlignedSequence<Ty, Blank> &operator=(const AlignedSequence<Ty, Blank> &Other) {
     Data = Other.Data;
     return (*this);
   }
@@ -145,5 +145,6 @@ public:
 #include "SASmithWaterman.h"
 #include "SALocalGotoh.h"
 #include "SAGlobalGotoh.h"
+#include "SAShortSighted.h"
 
 #endif
