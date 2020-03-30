@@ -41,7 +41,7 @@ int main(int argc, char** argv) {
     seq2 = std::string(argv[2]);
   }
 
-  NeedlemanWunschSA<std::string,char,'-'> SA(ScoringSystem(-1,2),equal<char>); //could also use `nullptr` instead of `equal<char>`
+  NeedlemanWunschSA<std::string,char,'-'> SA(ScoringSystem(-1,1,-1),equal<char>); //could also use `nullptr` instead of `equal<char>`
   AlignedSequence<char,'-'> NWAlignment = SA.getAlignment(seq1,seq2);
 
   ////An even simpler way of using it with the default settings
@@ -50,10 +50,26 @@ int main(int argc, char** argv) {
   std::cout << "# Needleman-Wunsch:" << std::endl;
   printAlignment(NWAlignment);
   
-  AlignedSequence<char,'-'> HAlignment = HirschbergSA<std::string,char,'-'>(ScoringSystem(-1,2),equal<char>).getAlignment(seq1,seq2);
+  AlignedSequence<char,'-'> HAlignment = HirschbergSA<std::string,char,'-'>(ScoringSystem(-1,1,-1),equal<char>).getAlignment(seq1,seq2);
 
   std::cout << "# Hirschberg:" << std::endl;
   printAlignment(HAlignment);
+
+  AlignedSequence<char,'-'> GGotohAlignment = GlobalGotohSA<std::string,char,'-'>(ScoringSystem(-1,1,-1),equal<char>).getAlignment(seq1,seq2);
+
+  std::cout << "# Global Gotoh:" << std::endl;
+  printAlignment(GGotohAlignment);
+
+  AlignedSequence<char,'-'> LGotohAlignment = LocalGotohSA<std::string,char,'-'>(ScoringSystem(-1,1,-1),equal<char>).getAlignment(seq1,seq2);
+
+  std::cout << "# Local Gotoh:" << std::endl;
+  printAlignment(LGotohAlignment);
+
+  AlignedSequence<char,'-'> SWAlignment = SmithWatermanSA<std::string,char,'-'>(ScoringSystem(-1,1,-1),equal<char>).getAlignment(seq1,seq2);
+
+  std::cout << "# Smith-Waterman:" << std::endl;
+  printAlignment(SWAlignment);
+
 
   return 0;
 }
